@@ -21,6 +21,8 @@ public class Potions : MonoBehaviour
     private List<int> selectedPotions = new List<int>(); // Lista para rastrear las pociones seleccionadas
 
     private DaltonicManager daltonicManager;
+
+    private Animator animator;
     #endregion
 
     private void Start()
@@ -30,6 +32,7 @@ public class Potions : MonoBehaviour
         potionNum2.SetActive(false);
         potionNum3.SetActive(false);
         daltonicManager = GameObject.FindObjectOfType<DaltonicManager>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -111,6 +114,7 @@ public class Potions : MonoBehaviour
         // Si ya se han seleccionado dos pociones, cerramos el menú
         if (selectedPotions.Count >= 2)
         {
+            animator.SetBool("changeColor", true);
             Comprobation();
             potionsSelected = true;
             msg.SetActive(true);

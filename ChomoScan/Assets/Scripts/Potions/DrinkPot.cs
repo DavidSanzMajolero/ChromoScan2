@@ -8,8 +8,15 @@ public class DrinkPot : MonoBehaviour
     [SerializeField] private Potions potions;
     public bool potionDrinked = false;
     private bool playerInTrigger = false;
+    private Animator animator;
+    [SerializeField] private GameObject bannerLight;
     #endregion
 
+    public void Start()
+    {
+        bannerLight.SetActive(false);
+        animator = GetComponent<Animator>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -22,6 +29,8 @@ public class DrinkPot : MonoBehaviour
     {
         if (potions.potionsSelected && Input.GetKeyDown(KeyCode.O) && playerInTrigger)
         {
+            animator.SetBool("changeBack", true);
+            bannerLight.SetActive(true);
             StartCoroutine(Drink());
         }
     }

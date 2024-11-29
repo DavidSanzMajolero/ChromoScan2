@@ -25,10 +25,12 @@ public class BookSelector : MonoBehaviour
     private bool booksRotated;
 
     [SerializeField] private GameObject shelf; // La estantería que se moverá
+    private DaltonicManager daltonicManager;
     #endregion
 
     void Start()
     {
+        daltonicManager = GameObject.FindObjectOfType<DaltonicManager>();
         foreach (GameObject selector in selectors)
         {
             selector.SetActive(false);
@@ -65,10 +67,12 @@ public class BookSelector : MonoBehaviour
             {
                 if (!rotatedBooks.Contains(currentIndex)) // Solo rota si no está rotado
                 {
+                    Comprobation();
                     RotateBook(books[currentIndex]);
                     rotatedBooks.Add(currentIndex); // Marca como rotado
                 }
             }
+
         }
 
         if (playerInTrigger && Input.GetKeyDown(KeyCode.O))
@@ -180,10 +184,49 @@ public class BookSelector : MonoBehaviour
             {
                 booksRotated = true;
                 Close(); // Llama a la función de cerrar
+                daltonicManager.ShowResults();
                 StartCoroutine(MoveShelf()); // Inicia la corrutina para mover la estantería
             }
         }
     }
+
+    private void Comprobation()
+    {
+        // Verifica si el índice actual está dentro del rango de los libros
+        if (currentIndex >= 0 && currentIndex < books.Count)
+        {
+            // Diccionario para asociar cada índice con su función correspondiente
+            Dictionary<int, System.Action> bookActions = new Dictionary<int, System.Action>()
+            {
+                { 0, daltonicManager.SumDaltonic },
+                { 1, daltonicManager.SumProtan },
+                { 2, daltonicManager.SumNormal },
+                { 3, daltonicManager.SumDeutan },
+                { 4, daltonicManager.SumDaltonic },
+                { 5, daltonicManager.SumDaltonic },
+                { 6, daltonicManager.SumNormal },
+                { 7, daltonicManager.SumNormal },
+                { 8, daltonicManager.SumNormal }
+            };
+
+            // Verifica si existe una acción para el índice actual
+            if (bookActions.ContainsKey(currentIndex))
+            {
+                // Ejecuta la acción asociada con el índice
+                bookActions[currentIndex].Invoke();
+            }
+            else
+            {
+                Debug.LogWarning("No hay acción asignada para el índice: " + currentIndex);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Índice fuera de rango de los libros.");
+        }
+    }
+
+
 
     private IEnumerator MoveShelf()
     {
