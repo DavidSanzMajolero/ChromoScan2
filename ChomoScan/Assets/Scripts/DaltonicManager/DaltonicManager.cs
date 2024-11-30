@@ -38,8 +38,22 @@ public class DaltonicManager : MonoBehaviour
 	public float protan;
 	public float deutan;
 	public float daltonic;
+	[SerializeField] GameObject canvas;
 
-	public void SumNormal()
+    private void Start()
+    {
+        canvas.SetActive(true);
+		Time.timeScale = 0;
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            canvas.SetActive(false);
+            Time.timeScale = 1;
+        }
+    }
+    public void SumNormal()
 	{
 		normal++;
 	}
@@ -55,11 +69,31 @@ public class DaltonicManager : MonoBehaviour
 	{
 		daltonic++;
 	}
-	public void ShowResults()
-	{
-		Debug.Log("Normal points: " + normal);
-		Debug.Log("Protan points: " + protan);
-		Debug.Log("Deutan points: " + deutan);
-		Debug.Log("Daltonic points: " + daltonic);
-	}
+    public void ShowResults()
+    {
+        // Máximos
+        float maxDaltonic = 6f;
+        float maxProtan = 3f;
+        float maxDeutan = 1f;
+
+        // Cálculo de porcentajes
+        float daltonicPercentage = (daltonic / maxDaltonic) * 100f;
+        float protanPercentage = (protan / maxProtan) * 100f;
+        float deutanPercentage = (deutan / maxDeutan) * 100f;
+
+        // Daltonic (puede ser Protan y Deutan)
+        daltonicPercentage = Mathf.Min(daltonicPercentage, 100f);
+
+        // Calculamos el porcentaje normal como el complementario
+        // Guardar en GameData
+        GameData.ProtanPoints = protanPercentage;
+        GameData.DeutanPoints = deutanPercentage;
+        GameData.DaltonicPoints = daltonicPercentage;
+
+        Debug.Log("Protan %: " + protanPercentage);
+        Debug.Log("Deutan %: " + deutanPercentage);
+        Debug.Log("Daltonic %: " + daltonicPercentage);
+    }
+
+
 }

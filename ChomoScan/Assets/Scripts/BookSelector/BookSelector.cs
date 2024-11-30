@@ -170,8 +170,7 @@ public class BookSelector : MonoBehaviour
         if (book != null)
         {
             // Ajusta la rotación en el eje X a -60 grados, manteniendo Y y Z
-            book.transform.rotation = Quaternion.Euler(-60f, 0f, -90f);
-
+            book.transform.localEulerAngles = new Vector3(-60f, 0f, -90f);
             // Marca el libro como rotado
             selectors[currentIndex].SetActive(false);
             rotatedBooks.Add(currentIndex);
